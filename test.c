@@ -1,23 +1,31 @@
 #include <stdlib.h>
 
-void allocateMemory() {
-    int *ptr = (int *)malloc(sizeof(int));
-    if (ptr != NULL) {
-        // Some operations with ptr
-        free(ptr);
+void allocateMemory(int **ptr) {
+    *ptr = (int *)malloc(sizeof(int));
+    if (*ptr != NULL) {
+        // Some operations with *ptr
     }
 }
 
-void processMemory() {
-    int *ptr = (int *)malloc(sizeof(int));
-    if (ptr != NULL) {
-        // Some operations with ptr
-        free(ptr); // Potential false positive: ptr is freed, but it's not used afterward
+void processMemory(int **ptr) {
+    if (*ptr != NULL) {
+        // Some operations with *ptr
+        free(*ptr);
+        *ptr = NULL; // Set pointer to NULL after freeing
     }
 }
 
 int main() {
-    allocateMemory();
-    processMemory();
+    int *ptr = NULL;
+
+    allocateMemory(&ptr); // Allocate memory
+    processMemory(&ptr);  // Free memory
+
+    // Attempting to free memory again
+    if (ptr != NULL) {
+        free(ptr); // Potential false positive: ptr is freed again in main
+        ptr = NULL;
+    }
+
     return 0;
 }
