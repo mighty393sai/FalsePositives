@@ -1,34 +1,23 @@
-#include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 
-#define MAX_SIZE 100
-
-void readInput(char *buffer) {
-    printf("Enter a string: ");
-    fgets(buffer, MAX_SIZE, stdin); // Using fgets instead of gets to prevent buffer overflow
+void allocateMemory() {
+    int *ptr = (int *)malloc(sizeof(int));
+    if (ptr != NULL) {
+        // Some operations with ptr
+        free(ptr);
+    }
 }
 
-void processString(const char *input, char *output) {
-    // Processing function, no security issue here
-    strncpy(output, input, MAX_SIZE); // Using strncpy to prevent buffer overflow
-    output[MAX_SIZE - 1] = '\0'; // Ensuring null termination
-}
-
-void writeToFile(const char *data) {
-    FILE *file = fopen("output.txt", "w");
-    if (file != NULL) {
-        fputs(data, file);
-        fclose(file);
+void processMemory() {
+    int *ptr = (int *)malloc(sizeof(int));
+    if (ptr != NULL) {
+        // Some operations with ptr
+        free(ptr); // Potential false positive: ptr is freed, but it's not used afterward
     }
 }
 
 int main() {
-    char input[MAX_SIZE];
-    char output[MAX_SIZE];
-
-    readInput(input);
-    processString(input, output);
-    writeToFile(output);
-
+    allocateMemory();
+    processMemory();
     return 0;
 }
