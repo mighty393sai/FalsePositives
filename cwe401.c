@@ -1,12 +1,16 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 void allocateMemory() {
     int *ptr = (int *)malloc(sizeof(int));
-    // Code to use ptr
-    // Missing free(ptr)
+    if (ptr != NULL) {
+        *ptr = 10;
+        printf("Allocated memory at address: %p\n", (void *)ptr); // Added for demonstration
+        // No deallocation, false positive potential CWE-401
+    }
 }
 
 int main() {
-    allocateMemory(); // Potential false positive: memory release missing after effective lifetime
+    allocateMemory();
     return 0;
 }
